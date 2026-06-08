@@ -53,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <meta name="google-adsense-account" content="ca-pub-4812736287777658"/>
       </head>
       <body className="min-h-full">
         <ThemeProvider>
