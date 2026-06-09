@@ -54,6 +54,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full">
         {children}
         <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-7L3ZS3SY2Q"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7L3ZS3SY2Q');`}
+        </Script>
+        <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4812736287777658"
           strategy="afterInteractive"
           crossOrigin="anonymous"
