@@ -3,6 +3,7 @@ import { getDictionary, hasLocale } from '@/lib/dictionaries';
 import { getMovie } from '@/lib/movies';
 import { slugify } from '@/lib/slug';
 import { computeConsensus, worthVerdict } from '@/lib/consensus';
+
 import { SITE_URL } from '@/lib/site';
 import { notFound } from 'next/navigation';
 import { MovieDetailScreen } from '../MovieDetailScreen';
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const verdict = worthVerdict(movie.worth);
   const canonicalSlug = isPt ? ptSlug : enSlug;
 
-  const description = buildDescription({ title, year: movie.year, consensus, verdict, isPt });
+  const description = buildDescription({ title, year: movie.year, consensus, isPt });
 
   return {
     title: isPt
@@ -116,11 +117,6 @@ export default async function MovieDetailPage({ params }: Props) {
     ],
   };
 
-  // ── JSON-LD: FAQPage (only when community has data) ─────────────────────────
-  const faqLd = consensus.hasData
-    ? buildFaqLd({ title, consensus, verdict, isPt })
-    : null;
-
   return (
     <>
       <script
@@ -131,12 +127,6 @@ export default async function MovieDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      {faqLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
-        />
-      )}
       <MovieDetailScreen dict={dict} lang={locale} movie={movie} />
     </>
   );
@@ -148,111 +138,32 @@ function buildDescription({
   title,
   year,
   consensus,
-  verdict,
   isPt,
 }: {
   title: string;
   year: number;
   consensus: ReturnType<typeof computeConsensus>;
-  verdict: boolean | null;
   isPt: boolean;
 }): string {
   if (!consensus.hasData) {
     return isPt
-      ? `${title} (${year}) tem cena pós-crédito? Ainda sem votos da comunidade. Seja o primeiro a informar!`
-      : `Does ${title} (${year}) have post-credit scenes? No community votes yet. Be the first to report!`;
+      ? `${title} (${year}) tem cena pós-crédito? Ainda sem dados. Vote na nossa comunidade e ajude outros fãs!`
+      : `Does ${title} (${year}) have post-credit scenes? No data yet. Vote and help the community!`;
   }
 
   const n = consensus.total;
+  const votes = consensus.totalVotes;
 
   if (n === 0) {
+    // No scenes: reveal fully — there's nothing more to see on the page about scenes,
+    // but users visit to vote, check details, or explore other movies.
     return isPt
-      ? `${title} (${year}) NÃO tem cena pós-crédito. Pode sair quando os créditos começarem! Baseado em ${consensus.totalVotes} voto${consensus.totalVotes > 1 ? 's' : ''} da comunidade.`
-      : `${title} (${year}) has NO post-credit scenes. You can leave when the credits roll! Based on ${consensus.totalVotes} community vote${consensus.totalVotes > 1 ? 's' : ''}.`;
+      ? `${title} (${year}) não tem cena pós-crédito. Pode sair tranquilo! Confirmado por ${votes} voto${votes > 1 ? 's' : ''} da comunidade.`
+      : `${title} (${year}) has no post-credit scenes. You can leave safely! Confirmed by ${votes} community vote${votes > 1 ? 's' : ''}.`;
   }
 
-  const worthSuffix = isPt
-    ? verdict === true
-      ? ' Vale a pena esperar!'
-      : verdict === false
-      ? ' Dá pra pular sem culpa.'
-      : ''
-    : verdict === true
-    ? ' Worth staying for!'
-    : verdict === false
-    ? ' Fine to skip.'
-    : '';
-
+  // Has scenes: tease the count and worth verdict so users click through for the full answer.
   return isPt
-    ? `${title} (${year}) TEM ${n} cena${n > 1 ? 's' : ''} pós-crédito!${worthSuffix} Baseado em ${consensus.totalVotes} voto${consensus.totalVotes > 1 ? 's' : ''} da comunidade.`
-    : `${title} (${year}) HAS ${n} post-credit scene${n > 1 ? 's' : ''}!${worthSuffix} Based on ${consensus.totalVotes} community vote${consensus.totalVotes > 1 ? 's' : ''}.`;
-}
-
-function buildFaqLd({
-  title,
-  consensus,
-  verdict,
-  isPt,
-}: {
-  title: string;
-  consensus: ReturnType<typeof computeConsensus>;
-  verdict: boolean | null;
-  isPt: boolean;
-}) {
-  const n = consensus.total;
-  const questions = [];
-
-  if (isPt) {
-    const answerText =
-      n === 0
-        ? `Não, ${title} não tem cena pós-crédito. Pode sair do cinema quando os créditos começarem.`
-        : `Sim, ${title} tem ${n} cena${n > 1 ? 's' : ''} pós-crédito, de acordo com a comunidade.`;
-
-    questions.push({
-      '@type': 'Question',
-      name: `${title} tem cena pós-crédito?`,
-      acceptedAnswer: { '@type': 'Answer', text: answerText },
-    });
-
-    if (n > 0 && verdict !== null) {
-      questions.push({
-        '@type': 'Question',
-        name: `Vale a pena esperar os créditos de ${title}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text:
-            verdict === true
-              ? `Sim, vale a pena esperar! A comunidade confirma que as cenas pós-crédito de ${title} valem a espera.`
-              : `Não necessariamente. A comunidade acha que dá pra pular as cenas de ${title} sem culpa.`,
-        },
-      });
-    }
-  } else {
-    const answerText =
-      n === 0
-        ? `No, ${title} does not have any post-credit scenes. You can leave when the credits start rolling.`
-        : `Yes, ${title} has ${n} post-credit scene${n > 1 ? 's' : ''} according to the community.`;
-
-    questions.push({
-      '@type': 'Question',
-      name: `Does ${title} have post-credit scenes?`,
-      acceptedAnswer: { '@type': 'Answer', text: answerText },
-    });
-
-    if (n > 0 && verdict !== null) {
-      questions.push({
-        '@type': 'Question',
-        name: `Is it worth staying for the credits of ${title}?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text:
-            verdict === true
-              ? `Yes, it's worth staying! The community says the post-credit scenes of ${title} are worth the wait.`
-              : `Not really. The community thinks you can skip the post-credit scenes of ${title}.`,
-        },
-      });
-    }
-  }
-
-  return { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: questions };
+    ? `${title} (${year}) TEM cena pós-crédito! Quantas? Vale a pena esperar? Veja o resultado de ${votes} voto${votes > 1 ? 's' : ''} da comunidade.`
+    : `${title} (${year}) HAS post-credit scenes! How many? Worth staying? See the result from ${votes} community vote${votes > 1 ? 's' : ''}.`;
 }
