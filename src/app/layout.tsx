@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk, Hanken_Grotesk } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import Script from 'next/script';
 import './globals.css';
 
@@ -53,13 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full">
         {children}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-7L3ZS3SY2Q"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7L3ZS3SY2Q');`}
-        </Script>
+        <GoogleAnalytics gaId="G-7L3ZS3SY2Q" />
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4812736287777658"
           strategy="afterInteractive"
