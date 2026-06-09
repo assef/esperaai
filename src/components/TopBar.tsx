@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Wordmark } from './ui/Wordmark';
 import styles from './TopBar.module.css';
 import type { Dictionary } from '@/lib/dictionaries';
@@ -21,6 +22,8 @@ export function TopBar({ dict, lang }: TopBarProps) {
   const router = useRouter();
 
   const switchLang = (newLang: Locale) => {
+    if (newLang === lang) return;
+    sendGAEvent('event', 'language_switch', { from: lang, to: newLang });
     const newPath = pathname.replace(/^\/(pt-BR|en-US)/, `/${newLang}`);
     router.push(newPath);
   };

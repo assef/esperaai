@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { sendGAEvent } from '@next/third-parties/google';
 import { Poster } from './ui/Poster';
 import { ConsensusBadge } from './ConsensusBadge';
 import { Dot } from './ui/Dot';
@@ -23,6 +26,13 @@ export function MovieRow({ movie, lang, t }: MovieRowProps) {
       href={`/${lang}/movie/${movie.id}/${slugify(movie.title[lang])}`}
       className={`pressable ${styles.link}`}
       aria-label={`${movie.title[lang]}, ${movie.year}`}
+      onClick={() =>
+        sendGAEvent('event', 'select_content', {
+          content_type: 'movie',
+          item_id: movie.id,
+          item_name: movie.title[lang],
+        })
+      }
     >
       <Poster movie={movie} lang={lang} width={52} height={72} radius={9} />
 

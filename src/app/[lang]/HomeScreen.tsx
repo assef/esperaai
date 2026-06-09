@@ -1,6 +1,7 @@
 'use client';
 
 import { useDeferredValue, useEffect, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { TopBar } from '@/components/TopBar';
 import { SearchField } from '@/components/SearchField';
 import { MovieRow } from '@/components/MovieRow';
@@ -50,6 +51,11 @@ export function HomeScreen({ dict, lang, initialMovies }: HomeScreenProps) {
         .then((data) => {
           setResults(data);
           setFetching(false);
+          if (data.length === 0) {
+            sendGAEvent('event', 'search_no_results', { search_term: q });
+          } else {
+            sendGAEvent('event', 'search', { search_term: q, results_count: data.length });
+          }
         })
         .catch((e: Error) => {
           if (e.name !== 'AbortError') setFetching(false);

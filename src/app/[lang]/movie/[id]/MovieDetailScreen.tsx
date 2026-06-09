@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import Link from 'next/link';
 import { Poster } from '@/components/ui/Poster';
 import { AdSlot } from '@/components/ui/AdSlot';
@@ -32,7 +33,22 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
   const consensus = useMemo(() => computeConsensus(reports), [reports]);
   const verdict = useMemo(() => worthVerdict(worth), [worth]);
 
+  const openVoteSheet = () => {
+    sendGAEvent('event', 'vote_open', {
+      movie_id: movie.id,
+      movie_title: movie.title[lang],
+    });
+    openVoteSheet();
+  };
+
   const handleVote = async (payload: { total: number; worth: boolean | null }) => {
+    sendGAEvent('event', 'vote', {
+      movie_id: movie.id,
+      movie_title: movie.title[lang],
+      scenes: payload.total,
+      worth: payload.worth,
+    });
+
     const sig = String(payload.total);
     setReports((prev) => ({ ...prev, [sig]: (prev[sig] ?? 0) + 1 }));
     if (payload.worth === true) setWorth((prev) => ({ ...prev, yes: prev.yes + 1 }));
@@ -92,7 +108,7 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
           {verdict !== null && <WorthBadge verdict={verdict} t={t} />}
         </div>
 
-        <AnswerBlock consensus={consensus} t={t} onContribute={() => setVoteOpen(true)} />
+        <AnswerBlock consensus={consensus} t={t} onContribute={() => openVoteSheet()} />
 
         {consensus.hasData && (
           <div className={styles.contributeRow}>
@@ -102,7 +118,7 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
             </div>
             <Button
               variant="ghost"
-              onClick={() => setVoteOpen(true)}
+              onClick={() => openVoteSheet()}
               style={{ height: 40, padding: '0 14px', fontSize: 13.5, gap: 7, borderRadius: 12 }}
             >
               <EditIcon size={16} />
