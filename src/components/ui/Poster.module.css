@@ -1,0 +1,44 @@
+.image {
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
+.placeholder {
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.texture {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background-image: repeating-linear-gradient(135deg, #fff 0 1px, transparent 1px 9px);
+}
+
+.titleWrap {
+  position: relative;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+  overflow-wrap: break-word;
+}
+
+.tmdbLabel {
+  margin-top: 6px;
+  font-family: ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.75);
+}

@@ -1,0 +1,47 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--hairline);
+  background: var(--bg-elev);
+}
+
+.poster {
+  width: 52px;
+  height: 72px;
+  border-radius: 9px;
+  flex-shrink: 0;
+}
+
+.body {
+  flex: 1;
+}
+
+.lineTitle {
+  height: 16px;
+  width: 58%;
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+
+.lineMeta {
+  height: 12px;
+  width: 36%;
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+
+.lineSub {
+  height: 12px;
+  width: 44%;
+  border-radius: 5px;
+}
+
+.badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}

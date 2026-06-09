@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk, Hanken_Grotesk } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { VotesProvider } from '@/contexts/VotesContext';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -28,6 +27,15 @@ export const metadata: Metadata = {
     description: 'Tem cena pós-crédito? Descubra antes de sair do cinema.',
     type: 'website',
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#222018' },
+    { media: '(prefers-color-scheme: light)', color: '#f8f7f5' },
+  ],
 };
 
 const themeScript = `
@@ -57,9 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full">
         <ThemeProvider>
-          <VotesProvider>
-            {children}
-          </VotesProvider>
+          {children}
         </ThemeProvider>
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4812736287777658"

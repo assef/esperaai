@@ -1,0 +1,26 @@
+.slot {
+  border-radius: 14px;
+  border: 1px dashed var(--border);
+  background: repeating-linear-gradient(135deg, var(--bg-elev) 0 10px, var(--bg) 10px 20px);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.label {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--faint);
+  font-family: ui-monospace, monospace;
+}
+
+.placeholder {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--faint);
+}

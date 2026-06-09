@@ -1,0 +1,107 @@
+/* ── Empty state ── */
+.empty {
+  border-radius: 22px;
+  padding: 30px 22px;
+  text-align: center;
+  background: var(--bg-elev);
+  border: 1px dashed var(--border);
+}
+
+.emptyIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-elev2);
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+}
+
+.emptyTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.emptySub {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin-top: 8px;
+  margin-bottom: 0;
+  max-width: 280px;
+  margin-inline: auto;
+  line-height: 1.45;
+}
+
+/* ── Answer panel ── */
+.panel {
+  border-radius: 24px;
+  padding: 26px 22px 24px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.panelWait {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
+  box-shadow: 0 16px 38px color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+.panelGo {
+  background: var(--bg-elev);
+  color: var(--text);
+  border: 1px solid var(--hairline);
+}
+
+/* ── Verdict word ── */
+.word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.wordWait { font-size: 64px; }
+.wordGo   { font-size: 52px; }
+
+/* ── Subtitle ── */
+.sub {
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 12px;
+}
+
+.subWait { color: color-mix(in oklab, var(--accent-ink) 78%, var(--accent)); }
+.subGo   { color: var(--muted); }
+
+/* ── Scene count pill ── */
+.pill {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.pillWait { background: rgba(255, 255, 255, 0.16); }
+.pillGo   { background: var(--bg-elev2); }
+
+.pillCount {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 17px;
+}
+
+.pillLabelWait { color: color-mix(in oklab, var(--accent-ink) 78%, var(--accent)); font-weight: 600; }
+.pillLabelGo   { color: var(--muted); font-weight: 600; }

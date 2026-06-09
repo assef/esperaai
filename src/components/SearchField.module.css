@@ -1,0 +1,41 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 54px;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+}
+
+.icon {
+  color: var(--faint);
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 16.5px;
+  min-width: 0;
+}
+
+.clearBtn {
+  border: none;
+  background: var(--bg-elev2);
+  color: var(--muted);
+  width: 26px;
+  height: 26px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}

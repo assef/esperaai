@@ -1,32 +1,74 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useState } from 'react';
 import { TopBar } from '@/components/TopBar';
 import { SearchField } from '@/components/SearchField';
 import { MovieRow } from '@/components/MovieRow';
+import { MovieRowSkeleton } from '@/components/MovieRowSkeleton';
 import { AdSlot } from '@/components/ui/AdSlot';
 import { mkT } from '@/lib/format';
+import styles from './HomeScreen.module.css';
 import type { Dictionary } from '@/lib/dictionaries';
-import type { Locale } from '@/lib/types';
-import type { Movie } from '@/lib/types';
+import type { Locale, Movie } from '@/lib/types';
 
 interface HomeScreenProps {
   dict: Dictionary;
   lang: Locale;
-  movies: Movie[];
+  initialMovies: Movie[];
 }
 
-export function HomeScreen({ dict, lang, movies }: HomeScreenProps) {
+const SKELETON_COUNT = 5;
+
+export function HomeScreen({ dict, lang, initialMovies }: HomeScreenProps) {
   const t = mkT(dict);
   const [query, setQuery] = useState('');
-  const q = query.trim().toLowerCase();
+  const deferredQuery = useDeferredValue(query);
+  const [results, setResults] = useState<Movie[] | null>(null);
+  const [fetching, setFetching] = useState(false);
 
-  const results = useMemo(() => {
-    if (!q) return null;
-    return movies.filter((m) =>
-      Object.values(m.title).some((title) => title.toLowerCase().includes(q)),
-    );
-  }, [q, movies]);
+  const isStale = query !== deferredQuery;
+  const hasQuery = query.trim().length >= 2;
+  const showSkeleton = hasQuery && (isStale || fetching);
+
+  useEffect(() => {
+    const q = deferredQuery.trim();
+    if (q.length < 2) {
+      setResults(null);
+      setFetching(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setFetching(true);
+
+    const timer = setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal: controller.signal })
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json() as Promise<Movie[]>;
+        })
+        .then((data) => {
+          setResults(data);
+          setFetching(false);
+        })
+        .catch((e: Error) => {
+          if (e.name !== 'AbortError') setFetching(false);
+        });
+    }, 350);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [deferredQuery]);
+
+  const handleQueryChange = (v: string) => {
+    setQuery(v);
+    if (!v.trim()) {
+      setResults(null);
+      setFetching(false);
+    }
+  };
 
   return (
     <main>
@@ -35,102 +77,56 @@ export function HomeScreen({ dict, lang, movies }: HomeScreenProps) {
         <TopBar dict={dict} lang={lang} />
 
         <div className="home-search">
-          <SearchField t={t} value={query} onChange={setQuery} />
+          <SearchField t={t} value={query} onChange={handleQueryChange} />
         </div>
 
-        {results ? (
-          <section aria-label={t.searchPlaceholder}>
-            {results.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 10px', color: 'var(--muted)' }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 700,
-                    fontSize: 18,
-                    color: 'var(--text)',
-                  }}
-                >
-                  {t.noResults}
-                </div>
-                <div style={{ fontSize: 14, marginTop: 6 }}>{t.searchHint}</div>
-              </div>
-            ) : (
-              <ul
-                className="home-movie-grid"
-                style={{ listStyle: 'none', padding: 0, margin: 0 }}
-              >
-                {results.map((m) => (
-                  <li key={m.id}>
-                    <MovieRow movie={m} lang={lang} t={t} />
-                  </li>
+        {hasQuery ? (
+          <section aria-live="polite" aria-label={t.searchPlaceholder}>
+            {showSkeleton ? (
+              <ul className={`home-movie-grid ${styles.list}`}>
+                {Array.from({ length: SKELETON_COUNT }, (_, i) => (
+                  <li key={i}><MovieRowSkeleton /></li>
                 ))}
               </ul>
-            )}
+            ) : results?.length === 0 ? (
+              <div className={styles.noResults}>
+                <div className={styles.noResultsTitle}>{t.noResults}</div>
+                <div className={styles.noResultsHint}>{t.searchHint}</div>
+              </div>
+            ) : results ? (
+              <ul className={`home-movie-grid ${styles.list}`}>
+                {results.map((m) => (
+                  <li key={m.id}><MovieRow movie={m} lang={lang} t={t} /></li>
+                ))}
+              </ul>
+            ) : null}
           </section>
         ) : (
           <>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: 2,
-              }}
-            >
-              <h2
-                className="home-heading"
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 800,
-                  fontSize: 15,
-                  letterSpacing: '0.02em',
-                  margin: 0,
-                }}
-              >
+            <div className={styles.sectionHeader}>
+              <h2 className={`home-heading ${styles.communityHeading}`}>
                 {t.communityUpdated}
               </h2>
-              <span
-                aria-hidden
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 99,
-                  background: 'var(--accent)',
-                  boxShadow: '0 0 0 4px var(--accent-soft)',
-                }}
-              />
+              <span aria-hidden className={styles.liveDot} />
             </div>
 
-            <ul
-              className="home-movie-grid"
-              style={{ listStyle: 'none', padding: 0, margin: 0 }}
-            >
-              {movies.slice(0, 4).map((m) => (
-                <li key={m.id}>
-                  <MovieRow movie={m} lang={lang} t={t} />
+            {initialMovies.length === 0 ? (
+              <div className={styles.emptyHint}>{t.searchHint}</div>
+            ) : (
+              <ul className={`home-movie-grid ${styles.list}`}>
+                {initialMovies.slice(0, 4).map((m) => (
+                  <li key={m.id}><MovieRow movie={m} lang={lang} t={t} /></li>
+                ))}
+                <li className="home-ad-item">
+                  <AdSlot t={t} height={100} />
                 </li>
-              ))}
-              <li className="home-ad-item">
-                <AdSlot t={t} height={100} />
-              </li>
-              {movies.slice(4).map((m) => (
-                <li key={m.id}>
-                  <MovieRow movie={m} lang={lang} t={t} />
-                </li>
-              ))}
-            </ul>
+                {initialMovies.slice(4).map((m) => (
+                  <li key={m.id}><MovieRow movie={m} lang={lang} t={t} /></li>
+                ))}
+              </ul>
+            )}
 
-            <p
-              style={{
-                textAlign: 'center',
-                color: 'var(--faint)',
-                fontSize: 12,
-                fontWeight: 500,
-                marginTop: 4,
-              }}
-            >
-              {t.free}
-            </p>
+            <p className={styles.footer}>{t.free}</p>
           </>
         )}
       </div>

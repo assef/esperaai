@@ -2,15 +2,15 @@ export type Locale = 'pt-BR' | 'en-US';
 export type Theme = 'dark' | 'light';
 
 export interface Movie {
-  id: string;
+  id: string;              // TMDB id as string — used in URLs
+  tmdbId: number;
   title: Record<Locale, string>;
+  originalTitle: string;
   year: number;
   runtime: number;
   rating: number;
-  hue: number;
-  /** TMDB poster_path — null until API integrated */
+  hue: number;             // derived: tmdbId % 360, for poster placeholder
   posterPath: string | null;
-  /** Frequency map: "mid-post" signature → vote count */
   reports: Record<string, number>;
   worth: { yes: number; no: number };
   synopsis: Record<Locale, string>;
@@ -21,8 +21,6 @@ export interface Consensus {
   total: number;
   totalVotes: number;
   confirmations: number;
-  mid: number;
-  post: number;
   agreement: number;
 }
 

@@ -1,3 +1,4 @@
+import styles from './ConsensusBadge.module.css';
 import type { Consensus } from '@/lib/types';
 
 interface ConsensusBadgeProps {
@@ -6,26 +7,13 @@ interface ConsensusBadgeProps {
 }
 
 export function ConsensusBadge({ consensus, big = false }: ConsensusBadgeProps) {
-  const sz = big ? 44 : 38;
+  const sizeClass = big ? styles.big : styles.normal;
 
   if (!consensus.hasData) {
     return (
       <div
         aria-label="Sem dados"
-        style={{
-          width: sz,
-          height: sz,
-          borderRadius: 12,
-          display: 'grid',
-          placeItems: 'center',
-          background: 'var(--bg-elev2)',
-          color: 'var(--faint)',
-          border: '1px dashed var(--border)',
-          fontFamily: 'var(--font-display)',
-          fontWeight: 700,
-          fontSize: big ? 20 : 17,
-          flexShrink: 0,
-        }}
+        className={`${styles.badge} ${sizeClass} ${styles.empty}`}
       >
         ?
       </div>
@@ -37,22 +25,7 @@ export function ConsensusBadge({ consensus, big = false }: ConsensusBadgeProps) 
   return (
     <div
       aria-label={`${consensus.total} ${hasScenes ? 'cenas' : 'cenas (nenhuma)'}`}
-      style={{
-        width: sz,
-        height: sz,
-        borderRadius: 12,
-        display: 'grid',
-        placeItems: 'center',
-        background: hasScenes ? 'var(--accent)' : 'var(--bg-elev2)',
-        color: hasScenes ? 'var(--accent-ink)' : 'var(--faint)',
-        fontFamily: 'var(--font-display)',
-        fontWeight: 800,
-        fontSize: big ? 22 : 19,
-        flexShrink: 0,
-        boxShadow: hasScenes
-          ? '0 4px 12px color-mix(in oklab, var(--accent) 45%, transparent)'
-          : 'none',
-      }}
+      className={`${styles.badge} ${sizeClass} ${hasScenes ? styles.hasScenes : styles.noScenes}`}
     >
       {consensus.total}
     </div>

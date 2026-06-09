@@ -1,0 +1,56 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+}
+
+.labelCol {
+  flex: 1;
+}
+
+.labelText {
+  font-weight: 700;
+  font-size: 15.5px;
+}
+
+.desc {
+  color: var(--faint);
+  font-size: 12.5px;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--bg-elev2);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  transition: opacity 0.15s ease;
+}
+
+.btnActive {
+  color: var(--text);
+}
+
+.btnDisabled {
+  color: var(--faint);
+  opacity: 0.5;
+}
+
+.value {
+  width: 30px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 26px;
+}

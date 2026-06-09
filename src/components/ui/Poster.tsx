@@ -1,6 +1,7 @@
-import { posterGradient } from '@/lib/movies';
-import type { Movie } from '@/lib/types';
-import type { Locale } from '@/lib/types';
+import Image from 'next/image';
+import { posterGradient } from '@/lib/poster';
+import styles from './Poster.module.css';
+import type { Movie, Locale } from '@/lib/types';
 
 interface PosterProps {
   movie: Movie;
@@ -15,73 +16,37 @@ export function Poster({ movie, lang, width, height, radius = 14, showLabel = fa
   const title = movie.title[lang];
 
   if (movie.posterPath) {
+    // Pick the smallest TMDB bucket that covers the rendered size at 2× for crisp HiDPI.
+    const tmdbSize = width <= 77 ? 'w154' : width <= 171 ? 'w342' : 'w500';
     return (
-      <img
-        src={`https://image.tmdb.org/t/p/w185${movie.posterPath}`}
+      <Image
+        className={styles.image}
+        src={`https://image.tmdb.org/t/p/${tmdbSize}${movie.posterPath}`}
         alt={title}
         width={width}
         height={height}
-        style={{ borderRadius: radius, objectFit: 'cover', flexShrink: 0 }}
+        sizes={`${width}px`}
+        style={{ borderRadius: radius }}
       />
     );
   }
 
   const fontSize = Math.max(11, Math.min(20, width * 0.13));
+  const padding = width > 90 ? 12 : 8;
 
   return (
     <div
+      className={styles.placeholder}
       aria-label={title}
-      style={{
-        width,
-        height,
-        borderRadius: radius,
-        flexShrink: 0,
-        position: 'relative',
-        overflow: 'hidden',
-        background: posterGradient(movie.hue),
-        boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.08)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-      }}
+      style={{ width, height, borderRadius: radius, background: posterGradient(movie.hue) }}
     >
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute',
-          inset: 0,
-          opacity: 0.10,
-          backgroundImage: 'repeating-linear-gradient(135deg, #fff 0 1px, transparent 1px 9px)',
-        }}
-      />
-      <div style={{ position: 'relative', padding: width > 90 ? 12 : 8 }}>
-        <div
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            color: '#fff',
-            fontSize,
-            lineHeight: 1.05,
-            letterSpacing: '-0.02em',
-            textShadow: '0 1px 6px rgba(0,0,0,0.45)',
-            overflowWrap: 'break-word',
-          }}
-        >
+      <div className={styles.texture} aria-hidden />
+      <div className={styles.titleWrap} style={{ padding }}>
+        <div className={styles.title} style={{ fontSize }}>
           {title}
         </div>
         {showLabel && (
-          <div
-            aria-hidden
-            style={{
-              marginTop: 6,
-              fontFamily: 'ui-monospace, monospace',
-              fontSize: 9,
-              letterSpacing: '0.05em',
-              color: 'rgba(255,255,255,0.75)',
-            }}
-          >
-            pôster TMDB
-          </div>
+          <div className={styles.tmdbLabel} aria-hidden>pôster TMDB</div>
         )}
       </div>
     </div>

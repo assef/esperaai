@@ -11,36 +11,36 @@ export function mergeReports(
   return r;
 }
 
-/** Mathematical mode of the reports frequency map. Tie breaks toward more scenes. */
+/** Mathematical mode of the reports frequency map. Tie breaks toward more scenes.
+ *  Handles both legacy "mid-post" keys and current single-total keys. */
 export function computeConsensus(reports: Record<string, number>): Consensus {
   const entries = Object.entries(reports ?? {});
   const totalVotes = entries.reduce((s, [, n]) => s + n, 0);
 
   if (totalVotes === 0) {
-    return { hasData: false, total: 0, totalVotes: 0, confirmations: 0, mid: 0, post: 0, agreement: 0 };
+    return { hasData: false, total: 0, totalVotes: 0, confirmations: 0, agreement: 0 };
   }
 
-  let best: { sig: string; n: number; mid: number; post: number; scenes: number } | null = null;
+  let best: { n: number; scenes: number } | null = null;
 
   for (const [sig, n] of entries) {
-    const [mid, post] = sig.split('-').map(Number);
-    const scenes = mid + post;
+    const scenes = sig.includes('-')
+      ? sig.split('-').reduce((s, v) => s + Number(v), 0)
+      : Number(sig);
     if (!best || n > best.n || (n === best.n && scenes > best.scenes)) {
-      best = { sig, n, mid, post, scenes };
+      best = { n, scenes };
     }
   }
 
   if (!best) {
-    return { hasData: false, total: 0, totalVotes: 0, confirmations: 0, mid: 0, post: 0, agreement: 0 };
+    return { hasData: false, total: 0, totalVotes: 0, confirmations: 0, agreement: 0 };
   }
 
   return {
     hasData: true,
     confirmations: best.n,
     totalVotes,
-    mid: best.mid,
-    post: best.post,
-    total: best.mid + best.post,
+    total: best.scenes,
     agreement: Math.round((best.n / totalVotes) * 100),
   };
 }

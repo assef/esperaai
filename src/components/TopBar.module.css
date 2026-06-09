@@ -1,0 +1,60 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.langGroup {
+  display: flex;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 2px;
+}
+
+.langBtn {
+  border: none;
+  border-radius: 9px;
+  padding: 6px 9px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  transition: background 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+}
+
+.langActive {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.langInactive {
+  background: transparent;
+  color: var(--muted);
+}
+
+.themeBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}

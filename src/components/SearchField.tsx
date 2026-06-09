@@ -1,6 +1,7 @@
 'use client';
 
 import { SearchIcon, CloseIcon } from './ui/Icon';
+import styles from './SearchField.module.css';
 import type { T } from '@/lib/format';
 
 interface SearchFieldProps {
@@ -11,20 +12,8 @@ interface SearchFieldProps {
 
 export function SearchField({ t, value, onChange }: SearchFieldProps) {
   return (
-    <div
-      className="search-wrapper"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 11,
-        height: 54,
-        padding: '0 16px',
-        borderRadius: 16,
-        background: 'var(--bg-elev)',
-        border: '1px solid var(--border)',
-      }}
-    >
-      <span style={{ color: 'var(--faint)', display: 'inline-flex', flexShrink: 0 }} aria-hidden>
+    <div className={`search-wrapper ${styles.wrapper}`}>
+      <span className={styles.icon} aria-hidden>
         <SearchIcon size={21} />
       </span>
       <input
@@ -34,34 +23,13 @@ export function SearchField({ t, value, onChange }: SearchFieldProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={t.searchPlaceholder}
-        style={{
-          flex: 1,
-          border: 'none',
-          outline: 'none',
-          background: 'transparent',
-          color: 'var(--text)',
-          fontFamily: 'var(--font-ui)',
-          fontWeight: 600,
-          fontSize: 16.5,
-          minWidth: 0,
-        }}
+        className={styles.input}
       />
       {value && (
         <button
           onClick={() => onChange('')}
           aria-label="Limpar busca"
-          style={{
-            border: 'none',
-            background: 'var(--bg-elev2)',
-            color: 'var(--muted)',
-            cursor: 'pointer',
-            width: 26,
-            height: 26,
-            borderRadius: 99,
-            display: 'grid',
-            placeItems: 'center',
-            flexShrink: 0,
-          }}
+          className={styles.clearBtn}
         >
           <CloseIcon size={15} />
         </button>

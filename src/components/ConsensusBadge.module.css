@@ -1,0 +1,40 @@
+.badge {
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Size variants */
+.normal {
+  width: 38px;
+  height: 38px;
+  font-size: 19px;
+}
+
+.big {
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+}
+
+/* State variants */
+.empty {
+  background: var(--bg-elev2);
+  color: var(--faint);
+  border: 1px dashed var(--border);
+  font-weight: 700;
+}
+
+.hasScenes {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+.noScenes {
+  background: var(--bg-elev2);
+  color: var(--faint);
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Poster } from '@/components/ui/Poster';
 import { AdSlot } from '@/components/ui/AdSlot';
@@ -10,12 +10,12 @@ import { WorthBadge } from '@/components/WorthBadge';
 import { VoteSheet } from '@/components/VoteSheet';
 import { BackIcon, StarIcon, ClockIcon, UsersIcon, EditIcon } from '@/components/ui/Icon';
 import { Dot } from '@/components/ui/Dot';
-import { computeConsensus, mergeReports, mergeWorth, worthVerdict } from '@/lib/consensus';
-import { useVotes } from '@/contexts/VotesContext';
+import { computeConsensus, worthVerdict } from '@/lib/consensus';
+import { submitVote } from '@/lib/actions';
 import { mkT } from '@/lib/format';
+import styles from './MovieDetailScreen.module.css';
 import type { Dictionary } from '@/lib/dictionaries';
-import type { Locale } from '@/lib/types';
-import type { Movie } from '@/lib/types';
+import type { Locale, Movie } from '@/lib/types';
 
 interface MovieDetailScreenProps {
   dict: Dictionary;
@@ -25,38 +25,39 @@ interface MovieDetailScreenProps {
 
 export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps) {
   const t = mkT(dict);
-  const { userVotes, submitVote } = useVotes();
   const [voteOpen, setVoteOpen] = useState(false);
+  const [reports, setReports] = useState(() => movie.reports);
+  const [worth, setWorth] = useState(() => movie.worth);
 
-  const userVote = userVotes[movie.id];
-  const mergedReports = mergeReports(movie.reports, userVote?.reports);
-  const mergedWorth = mergeWorth(movie.worth, userVote?.worth);
-  const consensus = computeConsensus(mergedReports);
-  const verdict = worthVerdict(mergedWorth);
+  const consensus = useMemo(() => computeConsensus(reports), [reports]);
+  const verdict = useMemo(() => worthVerdict(worth), [worth]);
+
+  const handleVote = async (payload: { total: number; worth: boolean | null }) => {
+    const sig = String(payload.total);
+    setReports((prev) => ({ ...prev, [sig]: (prev[sig] ?? 0) + 1 }));
+    if (payload.worth === true) setWorth((prev) => ({ ...prev, yes: prev.yes + 1 }));
+    else if (payload.worth === false) setWorth((prev) => ({ ...prev, no: prev.no + 1 }));
+
+    try {
+      const result = await submitVote(movie.id, payload);
+      setReports(result.reports);
+      setWorth(result.worth);
+    } catch {
+      // Keep optimistic state — vote likely still saved
+    }
+  };
 
   const metaInfo = (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 9,
-        color: 'var(--muted)',
-        fontSize: 13.5,
-        fontWeight: 600,
-        flexWrap: 'wrap',
-      }}
-    >
+    <div className={styles.meta}>
       <span>{movie.year}</span>
       <Dot />
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}>
+      <span className={styles.metaRuntime}>
         <ClockIcon size={14} />
         {movie.runtime} {t.minutes}
       </span>
       <Dot />
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--text)' }}>
-        <span style={{ color: 'var(--accent)', display: 'inline-flex' }}>
-          <StarIcon size={14} />
-        </span>
+      <span className={styles.metaRating}>
+        <span className={styles.metaRatingIcon}><StarIcon size={14} /></span>
         <span aria-label={`Nota ${movie.rating.toFixed(1)}`}>{movie.rating.toFixed(1)}</span>
       </span>
     </div>
@@ -64,92 +65,41 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
 
   return (
     <div className="detail-layout">
-      {/* Back button — spans full grid width on desktop */}
       <div className="detail-back-bar">
-        <Link
-          href={`/${lang}`}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            height: 40,
-            padding: '0 14px 0 10px',
-            borderRadius: 12,
-            background: 'var(--bg-elev)',
-            border: '1px solid var(--border)',
-            color: 'var(--text)',
-            textDecoration: 'none',
-            fontFamily: 'var(--font-ui)',
-            fontWeight: 600,
-            fontSize: 14.5,
-          }}
-        >
+        <Link href={`/${lang}`} className={styles.backLink}>
           <BackIcon size={19} />
           {t.back}
         </Link>
       </div>
 
-      {/* Desktop left column: large poster (hidden on mobile) */}
       <aside className="detail-poster-col" aria-hidden="true">
         <Poster movie={movie} lang={lang} width={320} height={464} radius={18} showLabel />
       </aside>
 
-      {/* Main content column */}
       <div className="detail-main-col">
-        {/* Mobile only: compact header with small poster + title */}
         <div className="detail-mobile-header">
           <Poster movie={movie} lang={lang} width={92} height={134} radius={14} showLabel />
-          <div
-            style={{
-              flex: 1,
-              minWidth: 0,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              gap: 10,
-            }}
-          >
+          <div className={styles.mobileHeaderInfo}>
             <h1 className="detail-title">{movie.title[lang]}</h1>
             {metaInfo}
             {verdict !== null && <WorthBadge verdict={verdict} t={t} />}
           </div>
         </div>
 
-        {/* Desktop only: title + meta at top of right column */}
         <div className="detail-desktop-header">
           <h1 className="detail-title">{movie.title[lang]}</h1>
           {metaInfo}
           {verdict !== null && <WorthBadge verdict={verdict} t={t} />}
         </div>
 
-        {/* Content: same on both breakpoints */}
         <AnswerBlock consensus={consensus} t={t} onContribute={() => setVoteOpen(true)} />
 
         {consensus.hasData && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 12,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                color: 'var(--muted)',
-                fontSize: 13.5,
-                fontWeight: 600,
-              }}
-            >
+          <div className={styles.contributeRow}>
+            <div className={styles.contributeMeta}>
               <UsersIcon size={17} />
-              <span>
-                {t.confirmedBy(consensus.totalVotes)} · {consensus.agreement}%
-              </span>
+              <span>{t.confirmedBy(consensus.totalVotes)} · {consensus.agreement}%</span>
             </div>
-
             <Button
               variant="ghost"
               onClick={() => setVoteOpen(true)}
@@ -161,32 +111,9 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
           </div>
         )}
 
-        {/* Synopsis — before ad on desktop (CSS order handles swap on mobile) */}
         <section className="detail-synopsis">
-          <h2
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontWeight: 800,
-              fontSize: 14,
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              color: 'var(--faint)',
-              marginBottom: 8,
-              marginTop: 0,
-            }}
-          >
-            {t.synopsis}
-          </h2>
-          <p
-            style={{
-              fontSize: 15,
-              lineHeight: 1.55,
-              color: 'var(--muted)',
-              margin: 0,
-            }}
-          >
-            {movie.synopsis[lang]}
-          </p>
+          <h2 className={styles.synopsisHeading}>{t.synopsis}</h2>
+          <p className={styles.synopsisText}>{movie.synopsis[lang]}</p>
         </section>
 
         <div className="detail-ad">
@@ -199,7 +126,7 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
           t={t}
           movieTitle={movie.title[lang]}
           onClose={() => setVoteOpen(false)}
-          onSubmit={(payload) => submitVote(movie.id, payload)}
+          onSubmit={handleVote}
         />
       )}
     </div>

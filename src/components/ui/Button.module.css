@@ -1,0 +1,34 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 8px 20px color-mix(in oklab, var(--accent) 35%, transparent);
+}
+
+.ghost {
+  background: var(--bg-elev);
+  color: var(--text);
+  border: 1px solid var(--border);
+  height: 50px;
+  font-size: 15px;
+  font-weight: 600;
+}
