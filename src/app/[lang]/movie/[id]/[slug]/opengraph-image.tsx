@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { getMovie } from '@/lib/movies';
+import { SITE_URL } from '@/lib/site';
 import { computeConsensus, worthVerdict } from '@/lib/consensus';
 import type { Locale } from '@/lib/types';
 
@@ -194,7 +195,7 @@ export default async function Image({
               letterSpacing: '0.04em',
             }}
           >
-            esperaai.com
+            {SITE_URL.replace(/^https?:\/\//, '')}
           </div>
         </div>
       </div>

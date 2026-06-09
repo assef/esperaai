@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { SITE_URL } from '@/lib/site';
 
 export const alt = 'Espera aí — Tem cena pós-crédito?';
 export const size = { width: 1200, height: 630 };
@@ -86,7 +87,7 @@ export default async function Image({
             letterSpacing: '0.04em',
           }}
         >
-          esperaai.com
+          {SITE_URL.replace(/^https?:\/\//, '')}
         </div>
       </div>
     ),
