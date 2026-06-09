@@ -9,8 +9,7 @@
 }
 
 /* ── Dark theme (default — cinema) ── */
-:root,
-[data-theme="dark"] {
+:root {
   --bg:       oklch(0.155 0.006 60);
   --bg-elev:  oklch(0.205 0.006 60);
   --bg-elev2: oklch(0.255 0.007 60);
@@ -22,17 +21,19 @@
   --accent-soft: color-mix(in oklab, var(--accent) 20%, var(--bg));
 }
 
-/* ── Light theme ── */
-[data-theme="light"] {
-  --bg:       oklch(0.975 0.004 85);
-  --bg-elev:  oklch(1 0 0);
-  --bg-elev2: oklch(0.955 0.004 85);
-  --border:   oklch(0.90 0.005 80);
-  --hairline: oklch(0.93 0.004 80);
-  --text:     oklch(0.22 0.008 60);
-  --muted:    oklch(0.46 0.008 60);
-  --faint:    oklch(0.64 0.008 60);
-  --accent-soft: color-mix(in oklab, var(--accent) 14%, var(--bg));
+/* ── Light theme — follows OS preference ── */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:       oklch(0.975 0.004 85);
+    --bg-elev:  oklch(1 0 0);
+    --bg-elev2: oklch(0.955 0.004 85);
+    --border:   oklch(0.90 0.005 80);
+    --hairline: oklch(0.93 0.004 80);
+    --text:     oklch(0.22 0.008 60);
+    --muted:    oklch(0.46 0.008 60);
+    --faint:    oklch(0.64 0.008 60);
+    --accent-soft: color-mix(in oklab, var(--accent) 14%, var(--bg));
+  }
 }
 
 /* ── Reset & base ── */

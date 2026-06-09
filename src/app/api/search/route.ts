@@ -28,6 +28,6 @@ export async function GET(request: NextRequest) {
     return Response.json(movies);
   } catch (err) {
     console.error('[/api/search]', err);
-    return Response.json([], { status: 502 });
+    return Response.json([], { status: 500 });
   }
 }

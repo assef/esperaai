@@ -4,6 +4,10 @@ import { notFound } from 'next/navigation';
 import { HomeScreen } from './HomeScreen';
 import type { Locale } from '@/lib/types';
 
+// Revalidate every 5 minutes so the community list stays fresh without hammering the DB.
+// Votes also call revalidatePath() in the server action for instant updates.
+export const revalidate = 300;
+
 interface Props {
   params: Promise<{ lang: string }>;
 }

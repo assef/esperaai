@@ -12,12 +12,6 @@
   margin-top: 3px;
 }
 
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .langGroup {
   display: flex;
   background: var(--bg-elev);
@@ -45,16 +39,4 @@
 .langInactive {
   background: transparent;
   color: var(--muted);
-}
-
-.themeBtn {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  color: var(--text);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
 }

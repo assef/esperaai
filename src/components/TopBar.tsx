@@ -2,8 +2,6 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { Wordmark } from './ui/Wordmark';
-import { SunIcon, MoonIcon } from './ui/Icon';
-import { useTheme } from '@/contexts/ThemeContext';
 import styles from './TopBar.module.css';
 import type { Dictionary } from '@/lib/dictionaries';
 import type { Locale } from '@/lib/types';
@@ -19,7 +17,6 @@ interface TopBarProps {
 }
 
 export function TopBar({ dict, lang }: TopBarProps) {
-  const { theme, toggle } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -35,32 +32,22 @@ export function TopBar({ dict, lang }: TopBarProps) {
         <div className={styles.tagline}>{dict.tagline}</div>
       </div>
 
-      <div className={styles.controls}>
-        <div
-          role="group"
-          aria-label="Idioma / Language"
-          className={styles.langGroup}
-        >
-          {LOCALES.map((l) => (
-            <button
-              key={l.value}
-              onClick={() => switchLang(l.value)}
-              aria-pressed={lang === l.value}
-              aria-label={l.value}
-              className={`${styles.langBtn} ${lang === l.value ? styles.langActive : styles.langInactive}`}
-            >
-              {l.label}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={toggle}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          className={styles.themeBtn}
-        >
-          {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={17} />}
-        </button>
+      <div
+        role="group"
+        aria-label="Idioma / Language"
+        className={styles.langGroup}
+      >
+        {LOCALES.map((l) => (
+          <button
+            key={l.value}
+            onClick={() => switchLang(l.value)}
+            aria-pressed={lang === l.value}
+            aria-label={l.value}
+            className={`${styles.langBtn} ${lang === l.value ? styles.langActive : styles.langInactive}`}
+          >
+            {l.label}
+          </button>
+        ))}
       </div>
     </header>
   );

@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { getDb } from './db';
 import { computeConsensus } from './consensus';
 import type { Consensus } from './types';
@@ -36,6 +37,10 @@ export async function submitVote(movieId: string, payload: VotePayload): Promise
 
   const reports = (doc.reports as Record<string, number>) ?? {};
   const worth = (doc.worth as { yes: number; no: number }) ?? { yes: 0, no: 0 };
+
+  // Bust the ISR cache for the home list so the updated consensus shows up immediately.
+  revalidatePath('/pt-BR');
+  revalidatePath('/en-US');
 
   return { reports, worth, consensus: computeConsensus(reports) };
 }

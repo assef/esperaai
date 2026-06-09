@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk, Hanken_Grotesk } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
-import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -38,35 +37,22 @@ export const viewport: Viewport = {
   ],
 };
 
-const themeScript = `
-(function(){
-  try {
-    var t = localStorage.getItem('esperaai.theme');
-    if (t === 'light' || t === 'dark') {
-      document.documentElement.setAttribute('data-theme', t);
-    }
-    var m = location.pathname.match(/^\\/(pt-BR|en-US)/);
-    if (m) document.documentElement.lang = m[1];
-  } catch(e) {}
-})();
-`;
+// Set <html lang> to match the locale before first paint, avoiding a flash.
+const langScript = `(function(){try{var m=location.pathname.match(/^\\/(pt-BR|en-US)/);if(m)document.documentElement.lang=m[1];}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="pt-BR"
-      data-theme="dark"
       suppressHydrationWarning
       className={`${spaceGrotesk.variable} ${hankenGrotesk.variable} h-full`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <meta name="google-adsense-account" content="ca-pub-4812736287777658"/>
+        <script dangerouslySetInnerHTML={{ __html: langScript }} />
+        <meta name="google-adsense-account" content="ca-pub-4812736287777658" />
       </head>
       <body className="min-h-full">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        {children}
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4812736287777658"
           strategy="afterInteractive"
