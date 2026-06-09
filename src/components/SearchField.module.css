@@ -27,6 +27,10 @@
   min-width: 0;
 }
 
+.input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
 .clearBtn {
   border: none;
   background: var(--bg-elev2);
