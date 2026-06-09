@@ -19,13 +19,21 @@ const hankenGrotesk = Hanken_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Espera aí — Tem cena pós-crédito?',
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://esperaai.com',
+  ),
+  title: {
+    template: '%s | Espera aí',
+    default: 'Espera aí — Tem cena pós-crédito?',
+  },
   description: 'Descubra rapidamente se um filme tem cena pós-crédito. Colaborativo e gratuito.',
   keywords: ['cena pós-crédito', 'post credit scene', 'cinema', 'filmes'],
   openGraph: {
-    title: 'Espera aí',
-    description: 'Tem cena pós-crédito? Descubra antes de sair do cinema.',
+    siteName: 'EsperaAí',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
   },
 };
 

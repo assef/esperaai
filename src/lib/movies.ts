@@ -1,7 +1,8 @@
 import 'server-only';
-import type { Movie } from './types';
+import type { Movie, Locale } from './types';
 import { getDb } from './db';
 import { tmdbMovieDetail } from './tmdb';
+import { slugify } from './slug';
 
 // ── DB schema (new) ────────────────────────────────────────────────────────
 // Shared root fields:  tmdbId, originalTitle, year, runtime, rating,
@@ -71,6 +72,37 @@ function docToMovie(doc: Record<string, unknown>): Movie {
     worth: (doc.worth as Movie['worth']) ?? { yes: 0, no: 0 },
     synopsis,
   };
+}
+
+export type MovieSitemapEntry = {
+  id: string;
+  ptSlug: string;
+  enSlug: string;
+  updatedAt: Date;
+};
+
+export async function getAllMoviesForSitemap(): Promise<MovieSitemapEntry[]> {
+  try {
+    const db = await getDb();
+    const docs = await db
+      .collection('movies')
+      .find(
+        { $expr: { $gt: [{ $size: { $objectToArray: '$reports' } }, 0] } },
+        { projection: { tmdbId: 1, title: 1, locales: 1, updatedAt: 1 } },
+      )
+      .toArray();
+    return docs.map((doc) => {
+      const movie = docToMovie(doc as Record<string, unknown>);
+      return {
+        id: movie.id,
+        ptSlug: slugify(movie.title['pt-BR' as Locale]),
+        enSlug: slugify(movie.title['en-US' as Locale]),
+        updatedAt: doc.updatedAt instanceof Date ? doc.updatedAt : new Date(),
+      };
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getMovies(): Promise<Movie[]> {
