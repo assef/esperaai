@@ -38,7 +38,7 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
       movie_id: movie.id,
       movie_title: movie.title[lang],
     });
-    openVoteSheet();
+    setVoteOpen(true);
   };
 
   const handleVote = async (payload: { total: number; worth: boolean | null }) => {
