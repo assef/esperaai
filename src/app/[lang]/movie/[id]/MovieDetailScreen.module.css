@@ -82,6 +82,13 @@
   margin: 0;
 }
 
+.answerSummary {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
 .mobileHeaderInfo {
   flex: 1;
   min-width: 0;

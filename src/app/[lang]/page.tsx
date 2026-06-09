@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? 'Espera aí — Tem cena pós-crédito?'
       : 'Should I Wait — Post-credit scenes?',
     description: isPt
-      ? 'Descubra rapidamente se um filme tem cena pós-crédito. Colaborativo e gratuito.'
-      : 'Find out quickly if a movie has post-credit scenes. Community-driven and free.',
+      ? 'Descubra se um filme tem cena pós-crédito, stinger ou cena depois dos créditos. Sem spoilers, pela comunidade.'
+      : 'Find out if a movie has post-credit scenes, a stinger, or mid-credits scene. No spoilers, community-driven.',
     alternates: {
       canonical: `${SITE_URL}/${locale}`,
       languages: {

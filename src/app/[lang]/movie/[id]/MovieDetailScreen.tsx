@@ -23,9 +23,10 @@ interface MovieDetailScreenProps {
   dict: Dictionary;
   lang: Locale;
   movie: Movie;
+  answerSummary: string;
 }
 
-export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps) {
+export function MovieDetailScreen({ dict, lang, movie, answerSummary }: MovieDetailScreenProps) {
   const t = mkT(dict);
   const searchParams = useSearchParams();
   const backQuery = searchParams.get('s');
@@ -113,6 +114,8 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
         </div>
 
         <AnswerBlock consensus={consensus} t={t} onContribute={() => openVoteSheet()} />
+
+        <p className={styles.answerSummary}>{answerSummary}</p>
 
         {consensus.hasData && (
           <div className={styles.contributeRow}>

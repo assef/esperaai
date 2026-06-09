@@ -88,6 +88,10 @@ export function HomeScreen({ dict, lang, initialMovies }: HomeScreenProps) {
           <SearchField t={t} value={query} onChange={handleQueryChange} />
         </div>
 
+        {!hasQuery && (
+          <p className={styles.intro}>{t.seoIntro}</p>
+        )}
+
         {hasQuery ? (
           <section aria-live="polite" aria-label={t.searchPlaceholder}>
             {showSkeleton ? (

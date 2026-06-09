@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     template: '%s | Espera aí',
     default: 'Espera aí — Tem cena pós-crédito?',
   },
-  description: 'Descubra rapidamente se um filme tem cena pós-crédito. Colaborativo e gratuito.',
-  keywords: ['cena pós-crédito', 'post credit scene', 'cinema', 'filmes'],
+  description: 'Descubra se um filme tem cena pós-crédito, stinger ou cena depois dos créditos. Sem spoilers, pela comunidade.',
+  keywords: ['cena pós-crédito', 'post credit scene', 'stinger', 'cena depois dos créditos', 'vale a pena esperar os créditos', 'post credit scenes', 'cinema', 'filmes'],
   openGraph: {
     siteName: 'EsperaAí',
     type: 'website',

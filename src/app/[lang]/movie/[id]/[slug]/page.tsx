@@ -71,6 +71,7 @@ export default async function MovieDetailPage({ params }: Props) {
   const posterPath = movie.posterPath[locale] ?? movie.posterPath['pt-BR'];
   const consensus = computeConsensus(movie.reports);
   const verdict = worthVerdict(movie.worth);
+  const answerSummary = buildAnswerSummary({ title, year: movie.year, consensus, isPt });
   const totalVotes =
     Object.values(movie.reports).reduce((a, b) => a + b, 0) +
     movie.worth.yes +
@@ -127,12 +128,40 @@ export default async function MovieDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
-      <MovieDetailScreen dict={dict} lang={locale} movie={movie} />
+      <MovieDetailScreen dict={dict} lang={locale} movie={movie} answerSummary={answerSummary} />
     </>
   );
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
+
+function buildAnswerSummary({
+  title,
+  year,
+  consensus,
+  isPt,
+}: {
+  title: string;
+  year: number;
+  consensus: ReturnType<typeof computeConsensus>;
+  isPt: boolean;
+}): string {
+  if (!consensus.hasData) {
+    return isPt
+      ? `${title} (${year}) ainda não tem votos da comunidade sobre cenas pós-crédito.`
+      : `${title} (${year}) has no community votes on post-credit scenes yet.`;
+  }
+  const n = consensus.total;
+  const v = consensus.totalVotes;
+  if (n === 0) {
+    return isPt
+      ? `${title} (${year}) não tem cena pós-crédito, confirmado por ${v} ${v === 1 ? 'pessoa' : 'pessoas'} da comunidade.`
+      : `${title} (${year}) has no post-credit scenes, confirmed by ${v} ${v === 1 ? 'person' : 'people'} in the community.`;
+  }
+  return isPt
+    ? `${title} (${year}) tem ${n} ${n === 1 ? 'cena pós-crédito' : 'cenas pós-crédito'}, segundo ${v} ${v === 1 ? 'voto' : 'votos'} da comunidade.`
+    : `${title} (${year}) has ${n} ${n === 1 ? 'post-credit scene' : 'post-credit scenes'}, according to ${v} community ${v === 1 ? 'vote' : 'votes'}.`;
+}
 
 function buildDescription({
   title,
