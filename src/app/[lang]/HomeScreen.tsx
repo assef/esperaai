@@ -1,6 +1,7 @@
 'use client';
 
 import { useDeferredValue, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { sendGAEvent } from '@next/third-parties/google';
 import { TopBar } from '@/components/TopBar';
 import { SearchField } from '@/components/SearchField';
@@ -22,7 +23,8 @@ const SKELETON_COUNT = 5;
 
 export function HomeScreen({ dict, lang, initialMovies }: HomeScreenProps) {
   const t = mkT(dict);
-  const [query, setQuery] = useState('');
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(() => searchParams.get('s') ?? '');
   const deferredQuery = useDeferredValue(query);
   const [results, setResults] = useState<Movie[] | null>(null);
   const [fetching, setFetching] = useState(false);
@@ -102,7 +104,7 @@ export function HomeScreen({ dict, lang, initialMovies }: HomeScreenProps) {
             ) : results ? (
               <ul className={`home-movie-grid ${styles.list}`}>
                 {results.map((m) => (
-                  <li key={m.id}><MovieRow movie={m} lang={lang} t={t} /></li>
+                  <li key={m.id}><MovieRow movie={m} lang={lang} t={t} searchQuery={deferredQuery.trim()} /></li>
                 ))}
               </ul>
             ) : null}

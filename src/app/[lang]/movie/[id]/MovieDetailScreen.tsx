@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { sendGAEvent } from '@next/third-parties/google';
 import Link from 'next/link';
 import { Poster } from '@/components/ui/Poster';
@@ -26,6 +27,9 @@ interface MovieDetailScreenProps {
 
 export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps) {
   const t = mkT(dict);
+  const searchParams = useSearchParams();
+  const backQuery = searchParams.get('s');
+  const backHref = backQuery ? `/${lang}?s=${encodeURIComponent(backQuery)}` : `/${lang}`;
   const [voteOpen, setVoteOpen] = useState(false);
   const [reports, setReports] = useState(() => movie.reports);
   const [worth, setWorth] = useState(() => movie.worth);
@@ -82,7 +86,7 @@ export function MovieDetailScreen({ dict, lang, movie }: MovieDetailScreenProps)
   return (
     <div className="detail-layout">
       <div className="detail-back-bar">
-        <Link href={`/${lang}`} className={styles.backLink}>
+        <Link href={backHref} className={styles.backLink}>
           <BackIcon size={19} />
           {t.back}
         </Link>

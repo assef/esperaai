@@ -16,14 +16,16 @@ interface MovieRowProps {
   movie: Movie;
   lang: Locale;
   t: T;
+  searchQuery?: string;
 }
 
-export function MovieRow({ movie, lang, t }: MovieRowProps) {
+export function MovieRow({ movie, lang, t, searchQuery }: MovieRowProps) {
   const consensus = computeConsensus(movie.reports);
+  const qs = searchQuery ? `?s=${encodeURIComponent(searchQuery)}` : '';
 
   return (
     <Link
-      href={`/${lang}/movie/${movie.id}/${slugify(movie.title[lang])}`}
+      href={`/${lang}/movie/${movie.id}/${slugify(movie.title[lang])}${qs}`}
       className={`pressable ${styles.link}`}
       aria-label={`${movie.title[lang]}, ${movie.year}`}
       onClick={() =>
