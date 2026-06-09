@@ -32,3 +32,8 @@
   font-size: 15px;
   font-weight: 600;
 }
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
