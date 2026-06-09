@@ -15,13 +15,14 @@ interface PosterProps {
 export function Poster({ movie, lang, width, height, radius = 14, showLabel = false }: PosterProps) {
   const title = movie.title[lang];
 
-  if (movie.posterPath) {
+  const posterPath = movie.posterPath[lang] ?? movie.posterPath['pt-BR'];
+  if (posterPath) {
     // Pick the smallest TMDB bucket that covers the rendered size at 2× for crisp HiDPI.
     const tmdbSize = width <= 77 ? 'w154' : width <= 171 ? 'w342' : 'w500';
     return (
       <Image
         className={styles.image}
-        src={`https://image.tmdb.org/t/p/${tmdbSize}${movie.posterPath}`}
+        src={`https://image.tmdb.org/t/p/${tmdbSize}${posterPath}`}
         alt={title}
         width={width}
         height={height}

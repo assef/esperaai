@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
         runtime: 0,
         rating: Math.round(m.vote_average * 10) / 10,
         hue: m.id % 360,
-        posterPath: m.poster_path ?? null,
+        posterPath: { 'pt-BR': m.poster_path ?? null, 'en-US': m.poster_path ?? null },
         reports: db?.reports ?? {},
         worth: db?.worth ?? { yes: 0, no: 0 },
         synopsis: { 'pt-BR': m.overview ?? '', 'en-US': m.overview ?? '' },

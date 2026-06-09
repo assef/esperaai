@@ -10,7 +10,7 @@ export interface Movie {
   runtime: number;
   rating: number;
   hue: number;             // derived: tmdbId % 360, for poster placeholder
-  posterPath: string | null;
+  posterPath: Record<Locale, string | null>;
   reports: Record<string, number>;
   worth: { yes: number; no: number };
   synopsis: Record<Locale, string>;
