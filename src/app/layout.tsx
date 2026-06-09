@@ -1,55 +1,69 @@
-import type { Metadata, Viewport } from 'next';
-import { Space_Grotesk, Hanken_Grotesk } from 'next/font/google';
-import { GoogleAnalytics } from '@next/third-parties/google';
-import Script from 'next/script';
-import './globals.css';
+import type { Metadata, Viewport } from "next";
+import { Space_Grotesk, Hanken_Grotesk } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
+import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-space-grotesk',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
 });
 
 const hankenGrotesk = Hanken_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-hanken',
-  display: 'swap',
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-hanken",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://esperaai.com',
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://esperaai.com",
   ),
   title: {
-    template: '%s | Espera aí',
-    default: 'Espera aí — Tem cena pós-crédito?',
+    template: "%s | Espera aí",
+    default: "Espera aí — Tem cena pós-crédito?",
   },
-  description: 'Descubra se um filme tem cena pós-crédito, stinger ou cena depois dos créditos. Sem spoilers, pela comunidade.',
-  keywords: ['cena pós-crédito', 'post credit scene', 'stinger', 'cena depois dos créditos', 'vale a pena esperar os créditos', 'post credit scenes', 'cinema', 'filmes'],
+  description:
+    "Descubra se um filme tem cena pós-crédito. Sem spoilers, pela comunidade.",
+  keywords: [
+    "cena pós-crédito",
+    "post credit scene",
+    "stinger",
+    "cena depois dos créditos",
+    "vale a pena esperar os créditos",
+    "post credit scenes",
+    "cinema",
+    "filmes",
+  ],
   openGraph: {
-    siteName: 'EsperaAí',
-    type: 'website',
+    siteName: "EsperaAí",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
   },
 };
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#222018' },
-    { media: '(prefers-color-scheme: light)', color: '#f8f7f5' },
+    { media: "(prefers-color-scheme: dark)", color: "#222018" },
+    { media: "(prefers-color-scheme: light)", color: "#f8f7f5" },
   ],
 };
 
 // Set <html lang> to match the locale before first paint, avoiding a flash.
 const langScript = `(function(){try{var m=location.pathname.match(/^\\/(pt-BR|en-US)/);if(m)document.documentElement.lang=m[1];}catch(e){}})();`;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="pt-BR"
