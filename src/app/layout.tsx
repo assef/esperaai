@@ -38,6 +38,10 @@ export const metadata: Metadata = {
     "cinema",
     "filmes",
   ],
+  appleWebApp: {
+    title: 'EsperaAí',
+    statusBarStyle: 'default',
+  },
   openGraph: {
     siteName: "EsperaAí",
     type: "website",
