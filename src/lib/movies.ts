@@ -27,7 +27,12 @@ export async function getMovies(): Promise<Movie[]> {
     console.log('[getMovies] db connected');
     const docs = await db
       .collection('movies')
-      .find({}, { sort: { updatedAt: -1 }, limit: 12 })
+      .find(
+        // Only movies with at least one vote — movies are cached on first view
+        // but should only surface on the home list once the community has voted.
+        { $expr: { $gt: [{ $size: { $objectToArray: '$reports' } }, 0] } },
+        { sort: { updatedAt: -1 }, limit: 12 },
+      )
       .toArray();
     return docs.map((d) => docToMovie(d as Record<string, unknown>));
   } catch {
