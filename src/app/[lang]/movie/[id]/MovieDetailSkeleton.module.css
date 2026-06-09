@@ -1,0 +1,96 @@
+/* Back button */
+.backBtn {
+  height: 40px;
+  width: 96px;
+  border-radius: 12px;
+}
+
+/* Posters */
+.posterMobile {
+  width: 92px;
+  height: 134px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.posterDesktop {
+  width: 320px;
+  height: 464px;
+  border-radius: 18px;
+}
+
+/* Mobile header info column — mirrors .mobileHeaderInfo */
+.mobileInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Title — mobile: 23px × 1.08 lh ≈ 25px */
+.titleLine {
+  height: 25px;
+  width: 92%;
+  border-radius: 6px;
+}
+.titleLine2 {
+  height: 25px;
+  width: 58%;
+  border-radius: 6px;
+}
+
+/* Title — desktop: 38px × 1.04 lh ≈ 40px */
+.titleDesktop {
+  height: 40px;
+  width: 88%;
+  border-radius: 8px;
+}
+.titleDesktop2 {
+  height: 40px;
+  width: 54%;
+  border-radius: 8px;
+}
+
+/* Meta row (year · runtime · rating) */
+.meta {
+  height: 16px;
+  width: 52%;
+  border-radius: 4px;
+}
+
+/* Worth badge pill */
+.worthBadge {
+  height: 28px;
+  width: 112px;
+  border-radius: 8px;
+}
+
+/* Answer block panel — matches AnswerBlock panel height */
+.answerBlock {
+  height: 148px;
+  border-radius: 24px;
+}
+
+/* Synopsis section */
+.synopsis {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.synopsisLabel {
+  height: 13px;
+  width: 76px;
+  border-radius: 3px;
+  margin-bottom: 3px;
+}
+
+.synopsisLine {
+  height: 15px;
+  border-radius: 4px;
+}
+
+.synopsisLineFull { width: 100%; }
+.synopsisLineMid  { width: 72%; }
