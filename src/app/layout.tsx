@@ -40,9 +40,11 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/icons/icon-16.png', sizes: '16x16', type: 'image/png' },
       { url: '/icons/icon-32.png', sizes: '32x32', type: 'image/png' },
     ],
+    apple: { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
   },
   appleWebApp: {
     title: 'EsperaAí',
