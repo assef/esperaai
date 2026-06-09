@@ -4,6 +4,7 @@ import { ConsensusBadge } from './ConsensusBadge';
 import { Dot } from './ui/Dot';
 import { StarIcon } from './ui/Icon';
 import { computeConsensus } from '@/lib/consensus';
+import { slugify } from '@/lib/slug';
 import styles from './MovieRow.module.css';
 import type { Movie, Locale } from '@/lib/types';
 import type { T } from '@/lib/format';
@@ -19,7 +20,7 @@ export function MovieRow({ movie, lang, t }: MovieRowProps) {
 
   return (
     <Link
-      href={`/${lang}/movie/${movie.id}`}
+      href={`/${lang}/movie/${movie.id}/${slugify(movie.title[lang])}`}
       className={`pressable ${styles.link}`}
       aria-label={`${movie.title[lang]}, ${movie.year}`}
     >
